@@ -25,4 +25,10 @@ public class ErrorHandler {
     public ErrorResponse badRequestException(BadRequestException e){
         return new ErrorResponse(e.getMessage());
     }
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse runtimeExceptionException(RuntimeException e){
+        return new ErrorResponse(e.getMessage());
+    }
+
 }

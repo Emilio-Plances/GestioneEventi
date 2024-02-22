@@ -11,6 +11,10 @@ import java.util.List;
 @Data
 @Table(name = "events")
 public class Event {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "events_sequence")
+    @SequenceGenerator(name = "events_sequence",allocationSize = 1)
+    private long id;
     private String location;
     @Column(name = "max_members")
     private int maxMembers;

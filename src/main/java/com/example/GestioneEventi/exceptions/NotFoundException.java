@@ -1,4 +1,4 @@
-package com.example.PG.s.Dragons.exceptions;
+package com.example.GestioneEventi.exceptions;
 
 public class NotFoundException extends Exception{
     public NotFoundException(String message) {

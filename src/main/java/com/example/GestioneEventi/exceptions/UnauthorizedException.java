@@ -1,4 +1,4 @@
-package com.example.PG.s.Dragons.exceptions;
+package com.example.GestioneEventi.exceptions;
 
 public class UnauthorizedException extends Exception {
     public UnauthorizedException(String message) {

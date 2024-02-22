@@ -1,6 +1,7 @@
-package com.example.PG.s.Dragons.responses;
+package com.example.GestioneEventi.responses;
 
-import com.example.PG.s.Dragons.entities.User;
+
+import com.example.GestioneEventi.entities.User;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

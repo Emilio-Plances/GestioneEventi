@@ -1,7 +1,9 @@
-package com.example.PG.s.Dragons.exceptions;
+package com.example.GestioneEventi.exceptions;
 
-import com.example.PG.s.Dragons.responses.ErrorResponse;
+
+import com.example.GestioneEventi.responses.ErrorResponse;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

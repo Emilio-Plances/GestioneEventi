@@ -1,4 +1,4 @@
-package com.example.PG.s.Dragons.responses;
+package com.example.GestioneEventi.responses;
 
 import lombok.Data;
 

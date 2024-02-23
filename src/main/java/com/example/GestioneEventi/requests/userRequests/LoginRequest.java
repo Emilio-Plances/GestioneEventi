@@ -1,9 +1,11 @@
-package com.example.GestioneEventi.requests;
+package com.example.GestioneEventi.requests.userRequests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Data;
 
+@Data
 public class LoginRequest {
     @NotBlank(message="The email field cannot be blank")
     @Email(message= "Please enter a mail")

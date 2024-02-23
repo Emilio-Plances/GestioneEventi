@@ -24,4 +24,13 @@ public class Event {
     joinColumns = @JoinColumn(name="events_fk"),
     inverseJoinColumns = @JoinColumn(name="users_fk"))
     private List<User> userList=new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return  "id=" + id +
+                ", location='" + location + '\'' +
+                ", maxMembers=" + maxMembers +
+                ", date=" + date +
+                ", userList=" + userList;
+    }
 }

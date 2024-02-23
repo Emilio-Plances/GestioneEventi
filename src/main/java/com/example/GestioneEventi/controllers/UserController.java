@@ -1,6 +1,7 @@
 package com.example.GestioneEventi.controllers;
 
 import com.example.GestioneEventi.entities.User;
+import com.example.GestioneEventi.exceptions.AlreadyAssignedException;
 import com.example.GestioneEventi.exceptions.FullEventException;
 import com.example.GestioneEventi.exceptions.NotFoundException;
 import com.example.GestioneEventi.exceptions.UnauthorizedException;
@@ -70,7 +71,7 @@ public class UserController {
         return DefaultResponse.noObject("User upgraded",HttpStatus.OK);
     }
     @PatchMapping("/users/{id}/partecipation")
-    public ResponseEntity<DefaultResponse> partecipation(@PathVariable long id, @RequestBody PartecipationRequest partecipationRequest, BindingResult bindingResult) throws BadRequestException, FullEventException, NotFoundException {
+    public ResponseEntity<DefaultResponse> partecipation(@PathVariable long id, @RequestBody PartecipationRequest partecipationRequest, BindingResult bindingResult) throws BadRequestException, FullEventException, NotFoundException, AlreadyAssignedException {
         if(bindingResult.hasErrors())
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
         userService.addPartecipation(id,partecipationRequest.getEventId());

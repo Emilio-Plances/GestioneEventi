@@ -30,11 +30,10 @@ public class Event {
     @JoinTable(name="event_user",
     joinColumns = @JoinColumn(name="events_fk"),
     inverseJoinColumns = @JoinColumn(name="users_fk"))
-    private List<User> userList=new ArrayList<>();
-    @JsonIgnore
-    public void addUserList(User user) throws FullEventException {
-        if(userList.size()>=maxMembers) throw new FullEventException("The event is full");
-        userList.add(user);
+    private List<User> usersList=new ArrayList<>();
+
+    public void addUsersList(User user){
+        usersList.add(user);
     }
     @Override
     public String toString() {
@@ -42,6 +41,6 @@ public class Event {
                 ", location='" + location + '\'' +
                 ", maxMembers=" + maxMembers +
                 ", date=" + date +
-                ", userList=" + userList;
+                ", usersList=" + usersList;
     }
 }

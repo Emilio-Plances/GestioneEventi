@@ -3,6 +3,7 @@ package com.example.GestioneEventi.services;
 import com.example.GestioneEventi.entities.Event;
 import com.example.GestioneEventi.entities.User;
 import com.example.GestioneEventi.enums.Role;
+import com.example.GestioneEventi.exceptions.AlreadyAssignedException;
 import com.example.GestioneEventi.exceptions.FullEventException;
 import com.example.GestioneEventi.exceptions.NotFoundException;
 import com.example.GestioneEventi.repositories.UserRepository;
@@ -65,9 +66,11 @@ public class UserService {
         User user=findById(id);
         userRepository.delete(user);
     }
-    public void addPartecipation(long id, long eventId) throws NotFoundException, FullEventException {
+    public void addPartecipation(long id, long eventId) throws NotFoundException, FullEventException, AlreadyAssignedException {
         User user=findById(id);
         Event event=eventService.findById(eventId);
-        event.addUserList(user);
+        if(event.getUsersList().contains(user)) throw new AlreadyAssignedException("You are already assigned to this event");
+        if(event.getUsersList().size()==event.getMaxMembers()) throw new FullEventException("The event is full");
+        event.addUsersList(user);
     }
 }

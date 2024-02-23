@@ -35,5 +35,9 @@ public class ErrorHandler {
     public ErrorResponse fullEventException(FullEventException e){
         return new ErrorResponse(e.getMessage());
     }
-
+    @ExceptionHandler(AlreadyAssignedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse alreadyAssignedException(AlreadyAssignedException e){
+        return new ErrorResponse(e.getMessage());
+    }
 }

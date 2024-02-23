@@ -1,7 +1,9 @@
 package com.example.GestioneEventi.services;
 
+import com.example.GestioneEventi.entities.Event;
 import com.example.GestioneEventi.entities.User;
 import com.example.GestioneEventi.enums.Role;
+import com.example.GestioneEventi.exceptions.FullEventException;
 import com.example.GestioneEventi.exceptions.NotFoundException;
 import com.example.GestioneEventi.repositories.UserRepository;
 import com.example.GestioneEventi.requests.userRequests.RegisterRequest;
@@ -18,6 +20,8 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EventService eventService;
     @Autowired
     private PasswordEncoder encoder;
     public Page<User> findAll(Pageable pageable){
@@ -60,5 +64,10 @@ public class UserService {
     public void delete(long id) throws NotFoundException {
         User user=findById(id);
         userRepository.delete(user);
+    }
+    public void addPartecipation(long id, long eventId) throws NotFoundException, FullEventException {
+        User user=findById(id);
+        Event event=eventService.findById(eventId);
+        event.addUserList(user);
     }
 }

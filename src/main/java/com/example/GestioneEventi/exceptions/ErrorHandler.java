@@ -27,7 +27,12 @@ public class ErrorHandler {
     }
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse runtimeExceptionException(RuntimeException e){
+    public ErrorResponse runtimeException(RuntimeException e){
+        return new ErrorResponse(e.getMessage());
+    }
+    @ExceptionHandler(FullEventException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse fullEventException(FullEventException e){
         return new ErrorResponse(e.getMessage());
     }
 

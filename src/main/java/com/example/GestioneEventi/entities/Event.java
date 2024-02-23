@@ -1,5 +1,6 @@
 package com.example.GestioneEventi.entities;
 
+import com.example.GestioneEventi.exceptions.FullEventException;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,12 +20,19 @@ public class Event {
     @Column(name = "max_members")
     private int maxMembers;
     private LocalDate date;
+    @ManyToOne
+    @JoinColumn(name="creator_fk")
+    private User creator;
     @ManyToMany
     @JoinTable(name="event_user",
     joinColumns = @JoinColumn(name="events_fk"),
     inverseJoinColumns = @JoinColumn(name="users_fk"))
     private List<User> userList=new ArrayList<>();
 
+    public void addUserList(User user) throws FullEventException {
+        if(userList.size()>=maxMembers) throw new FullEventException("The event is full");
+        userList.add(user);
+    }
     @Override
     public String toString() {
         return  "id=" + id +

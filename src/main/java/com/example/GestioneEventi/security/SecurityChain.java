@@ -1,9 +1,6 @@
 package com.example.GestioneEventi.security;
 
-
-
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.GestioneEventi.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,10 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.util.AntPathMatcher;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecurityChain {
     @Autowired
     private JwtTools jwtTools;
@@ -27,6 +23,12 @@ public class SecurityChain {
         httpSecurity.cors(AbstractHttpConfigurer::disable);
 
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/auth/**").permitAll());
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/users/{id}/upgrade").hasAuthority("ADMIN"));
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/users").hasAuthority("ADMIN"));
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/**").denyAll());
 
         return httpSecurity.build();
     }

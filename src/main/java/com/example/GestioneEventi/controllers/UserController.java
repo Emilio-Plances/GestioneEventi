@@ -39,7 +39,7 @@ public class UserController {
     public ResponseEntity<DefaultResponse> register(@RequestBody @Validated RegisterRequest registerRequest, BindingResult bindingResult) throws BadRequestException {
         if(bindingResult.hasErrors())
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
-        return DefaultResponse.full("Success!",registerRequest, HttpStatus.CREATED);
+        return DefaultResponse.full("Success!",userService.register(registerRequest), HttpStatus.CREATED);
     }
     @PostMapping("/auth/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Validated LoginRequest loginRequest, BindingResult bindingResult) throws BadRequestException, NotFoundException, UnauthorizedException {
@@ -65,7 +65,6 @@ public class UserController {
         return DefaultResponse.full("Success!",userService.update(id,patchRequest),HttpStatus.OK);
     }
     @PatchMapping("/users/{id}/upgrade")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<DefaultResponse> upgrade(@PathVariable long id) throws NotFoundException {
         userService.upgrade(id);
         return DefaultResponse.noObject("User upgraded",HttpStatus.OK);
@@ -78,12 +77,10 @@ public class UserController {
         return DefaultResponse.noObject("Success",HttpStatus.OK);
     }
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<DefaultResponse> getAll(Pageable pageable){
         return DefaultResponse.noMessage(userService.findAll(pageable),HttpStatus.OK);
     }
     @GetMapping("/users/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<DefaultResponse> getUserById(@PathVariable long id) throws NotFoundException {
         return DefaultResponse.noMessage(userService.findById(id),HttpStatus.OK);
     }

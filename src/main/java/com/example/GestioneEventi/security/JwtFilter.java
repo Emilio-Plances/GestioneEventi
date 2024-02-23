@@ -25,9 +25,11 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String auth= request.getHeader("Authorization");
+
         if(auth==null|| !auth.startsWith("Bearer "))
             try {throw new UnauthorizedException("Token mancante!");}
             catch (UnauthorizedException e) {throw new RuntimeException(e);}
+
         String token=auth.substring(7);
         try {jwtTools.validateToken(token);}
         catch (UnauthorizedException e) {throw new RuntimeException(e);}

@@ -10,6 +10,7 @@ import com.example.GestioneEventi.repositories.UserRepository;
 import com.example.GestioneEventi.requests.userRequests.RegisterRequest;
 import com.example.GestioneEventi.requests.userRequests.UserPatchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    @Lazy
     private EventService eventService;
     @Autowired
     private PasswordEncoder encoder;

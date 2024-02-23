@@ -2,13 +2,10 @@ package com.example.GestioneEventi.services;
 
 import com.example.GestioneEventi.entities.Event;
 import com.example.GestioneEventi.entities.User;
-import com.example.GestioneEventi.enums.Role;
 import com.example.GestioneEventi.exceptions.NotFoundException;
 import com.example.GestioneEventi.repositories.EventRepository;
 import com.example.GestioneEventi.requests.eventRequests.EventPatchRequest;
 import com.example.GestioneEventi.requests.eventRequests.EventRequest;
-import com.example.GestioneEventi.requests.userRequests.RegisterRequest;
-import com.example.GestioneEventi.requests.userRequests.UserPatchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

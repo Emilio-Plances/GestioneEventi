@@ -1,6 +1,7 @@
 package com.example.GestioneEventi.entities;
 
 import com.example.GestioneEventi.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,7 +26,8 @@ public class User implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @ManyToMany(mappedBy = "userList",cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    @ManyToMany(mappedBy = "usersList",cascade = CascadeType.REMOVE)
     private List<Event> eventList;
     @OneToMany(mappedBy = "creator",cascade = CascadeType.REMOVE)
     private List<Event> createdEvents;

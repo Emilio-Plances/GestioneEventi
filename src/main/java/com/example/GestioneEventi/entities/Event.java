@@ -26,7 +26,7 @@ public class Event {
     @ManyToOne
     @JoinColumn(name="creator_fk")
     private User creator;
-    @JsonIgnore
+
     @ManyToMany
     @JoinTable(name="event_user",
     joinColumns = @JoinColumn(name="events_fk"),
@@ -35,13 +35,5 @@ public class Event {
 
     public void addUsersList(User user){
         usersList.add(user);
-    }
-    @Override
-    public String toString() {
-        return  "id=" + id +
-                ", location='" + location + '\'' +
-                ", maxMembers=" + maxMembers +
-                ", date=" + date +
-                ", usersList=" + usersList;
     }
 }

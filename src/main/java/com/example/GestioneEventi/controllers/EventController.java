@@ -1,23 +1,20 @@
 package com.example.GestioneEventi.controllers;
 
-import com.example.GestioneEventi.exceptions.AlreadyAssignedException;
-import com.example.GestioneEventi.exceptions.FullEventException;
+
+import com.example.GestioneEventi.exceptions.BadRequestException;
 import com.example.GestioneEventi.exceptions.NotFoundException;
-import com.example.GestioneEventi.exceptions.UnauthorizedException;
 import com.example.GestioneEventi.requests.eventRequests.EventPatchRequest;
 import com.example.GestioneEventi.requests.eventRequests.EventRequest;
-import com.example.GestioneEventi.requests.userRequests.PartecipationRequest;
 import com.example.GestioneEventi.responses.DefaultResponse;
 import com.example.GestioneEventi.security.JwtTools;
 import com.example.GestioneEventi.services.EventService;
-import org.apache.coyote.BadRequestException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +39,10 @@ public class EventController {
     @GetMapping("/all")
     public ResponseEntity<DefaultResponse> getAll(Pageable pageable){
         return DefaultResponse.noMessage(eventService.findAll(pageable), HttpStatus.OK);
+    }
+    @GetMapping("/notFull")
+    public ResponseEntity<DefaultResponse> getNotFull(Pageable pageable){
+        return DefaultResponse.noMessage(eventService.findNotFull(pageable), HttpStatus.OK);
     }
     @PatchMapping("/{id}")
     public ResponseEntity<DefaultResponse> update(@PathVariable long id,@RequestBody @Validated EventPatchRequest eventPatchRequest,BindingResult bindingResult) throws BadRequestException, NotFoundException {

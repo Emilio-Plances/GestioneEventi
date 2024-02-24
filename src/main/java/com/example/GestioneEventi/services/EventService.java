@@ -23,7 +23,7 @@ public class EventService {
     private UserService userService;
     public Event findById(long id) throws NotFoundException {
         Optional<Event> optionalEvent=eventRepository.findById(id);
-        if(optionalEvent.isEmpty())throw new NotFoundException("This user doesn't exist");
+        if(optionalEvent.isEmpty())throw new NotFoundException("This event doesn't exist");
         return optionalEvent.get();
     }
     public Page<Event> findAll(Pageable pageable){
@@ -59,5 +59,9 @@ public class EventService {
         if(event.getUsersList().contains(user)) throw new AlreadyAssignedException("You are already assigned to this event");
         if(event.getUsersList().size()==event.getMaxMembers()) throw new FullEventException("The event is full");
         event.addUsersList(user);
+        eventRepository.save(event);
+    }
+    public Page<Event> findNotFull(Pageable pageable){
+        return eventRepository.findNotFull(pageable);
     }
 }

@@ -56,6 +56,7 @@ public class UserService {
     public void setPassword(long id,String password) throws NotFoundException {
         User user=findById(id);
         user.setPassword(encoder.encode(password));
+        userRepository.save(user);
     }
     public User upgrade(long id) throws NotFoundException {
         User user=findById(id);

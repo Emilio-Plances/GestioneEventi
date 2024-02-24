@@ -33,37 +33,34 @@ public class User implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "creator",cascade = CascadeType.REMOVE)
     private List<Event> createdEvents;
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
+    @JsonIgnore
     @Override
     public String getUsername() {
         return null;
     }
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
-    }
-    @Override
-    public String toString() {
-        return  "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role;
     }
 }

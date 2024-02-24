@@ -4,21 +4,22 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Data
 public class DefaultResponse {
-    private LocalDate responseDate;
+    private LocalDateTime responseDate;
     private Object response;
     private String message;
 
     public DefaultResponse(Object response, String message) {
         this.response = response;
         this.message = message;
-        responseDate=LocalDate.now();
+        responseDate=LocalDateTime.now();
     }
     public DefaultResponse(String message) {
         this.message = message;
-        responseDate=LocalDate.now();
+        responseDate=LocalDateTime.now();
     }
     public static ResponseEntity<DefaultResponse> full(String message, Object obj, HttpStatus httpStatus){
         DefaultResponse defaultResponse=new DefaultResponse(obj, message);

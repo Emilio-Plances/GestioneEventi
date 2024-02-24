@@ -6,7 +6,6 @@ import com.example.GestioneEventi.exceptions.FullEventException;
 import com.example.GestioneEventi.exceptions.NotFoundException;
 import com.example.GestioneEventi.exceptions.BadRequestException;
 import com.example.GestioneEventi.exceptions.UnauthorizedException;
-import com.example.GestioneEventi.requests.userRequests.PartecipationRequest;
 import com.example.GestioneEventi.requests.userRequests.ChangePasswordRequest;
 import com.example.GestioneEventi.requests.userRequests.UserPatchRequest;
 import com.example.GestioneEventi.responses.DefaultResponse;
@@ -18,7 +17,6 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -41,7 +39,7 @@ public class UserController {
         if(bindingResult.hasErrors())
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
         User user=userService.findById(id);
-        if(!encoder.matches(passRequest.getOldPassword(),user.getPassword())) throw new UnauthorizedException("Passwords must match");
+        if(!encoder.matches(passRequest.getOldPassword(),user.getPassword())) throw new UnauthorizedException("Wrong password");
         userService.setPassword(id, passRequest.getNewPassword());
         return DefaultResponse.noObject("Password changed",HttpStatus.OK);
     }

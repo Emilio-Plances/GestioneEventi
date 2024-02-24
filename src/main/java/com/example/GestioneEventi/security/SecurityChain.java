@@ -34,6 +34,8 @@ public class SecurityChain {
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/users/{id}/upgrade").hasAuthority("ADMIN"));
 
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/events/all").permitAll());
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/events/notFull").permitAll());
+
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/events").hasAnyAuthority("ADMIN","ORGANIZER"));
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/events/{id}").hasAnyAuthority("ADMIN","ORGANIZER"));
 

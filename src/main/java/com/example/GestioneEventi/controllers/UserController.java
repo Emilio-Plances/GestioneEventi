@@ -4,17 +4,15 @@ import com.example.GestioneEventi.entities.User;
 import com.example.GestioneEventi.exceptions.AlreadyAssignedException;
 import com.example.GestioneEventi.exceptions.FullEventException;
 import com.example.GestioneEventi.exceptions.NotFoundException;
+import com.example.GestioneEventi.exceptions.BadRequestException;
 import com.example.GestioneEventi.exceptions.UnauthorizedException;
 import com.example.GestioneEventi.requests.userRequests.PartecipationRequest;
 import com.example.GestioneEventi.requests.userRequests.ChangePasswordRequest;
-import com.example.GestioneEventi.requests.userRequests.LoginRequest;
-import com.example.GestioneEventi.requests.userRequests.RegisterRequest;
 import com.example.GestioneEventi.requests.userRequests.UserPatchRequest;
 import com.example.GestioneEventi.responses.DefaultResponse;
-import com.example.GestioneEventi.responses.LoginResponse;
 import com.example.GestioneEventi.security.JwtTools;
+import com.example.GestioneEventi.services.EventService;
 import com.example.GestioneEventi.services.UserService;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Pageable;
@@ -27,29 +25,18 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
+    private EventService eventService;
+    @Autowired
     private PasswordEncoder encoder;
     @Autowired
     private JwtTools jwtTools;
-    @PostMapping("/auth/register")
-    public ResponseEntity<DefaultResponse> register(@RequestBody @Validated RegisterRequest registerRequest, BindingResult bindingResult) throws BadRequestException {
-        if(bindingResult.hasErrors())
-            throw new BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
-        return DefaultResponse.full("Success!",userService.register(registerRequest), HttpStatus.CREATED);
-    }
-    @PostMapping("/auth/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Validated LoginRequest loginRequest, BindingResult bindingResult) throws BadRequestException, NotFoundException, UnauthorizedException {
-        if(bindingResult.hasErrors())
-            throw new BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
-        User user=userService.findByEmail(loginRequest.getEmail());
-        if (!encoder.matches(loginRequest.getPassword(),user.getPassword())) throw new UnauthorizedException("Wrong username/password");
-        return LoginResponse.full(jwtTools.createToken(user),user,HttpStatus.OK);
-    }
-    @PatchMapping("/users/{id}/password")
+
+    @PatchMapping("/{id}/password")
     public ResponseEntity<DefaultResponse> changePassword(@PathVariable long id, @RequestBody @Validated ChangePasswordRequest passRequest, BindingResult bindingResult) throws NotFoundException, UnauthorizedException, BadRequestException {
         if(bindingResult.hasErrors())
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
@@ -58,39 +45,39 @@ public class UserController {
         userService.setPassword(id, passRequest.getNewPassword());
         return DefaultResponse.noObject("Password changed",HttpStatus.OK);
     }
-    @PatchMapping("/users/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<DefaultResponse> update(@PathVariable long id, @RequestBody @Validated UserPatchRequest patchRequest, BindingResult bindingResult) throws BadRequestException, NotFoundException {
         if(bindingResult.hasErrors())
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
         return DefaultResponse.full("Success!",userService.update(id,patchRequest),HttpStatus.OK);
     }
-    @PatchMapping("/users/{id}/upgrade")
+    @PatchMapping("/{id}/upgrade")
     public ResponseEntity<DefaultResponse> upgrade(@PathVariable long id) throws NotFoundException {
-        userService.upgrade(id);
-        return DefaultResponse.noObject("User upgraded",HttpStatus.OK);
+        return DefaultResponse.full("User upgraded",userService.upgrade(id),HttpStatus.OK);
     }
-    @PatchMapping("/users/{id}/partecipation")
-    public ResponseEntity<DefaultResponse> partecipation(@PathVariable long id, @RequestBody PartecipationRequest partecipationRequest, BindingResult bindingResult) throws BadRequestException, FullEventException, NotFoundException, AlreadyAssignedException {
-        if(bindingResult.hasErrors())
-            throw new BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
-        userService.addPartecipation(id,partecipationRequest.getEventId());
-        return DefaultResponse.noObject("Success",HttpStatus.OK);
-    }
-    @GetMapping("/users")
+    @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<DefaultResponse> getAll(Pageable pageable){
         return DefaultResponse.noMessage(userService.findAll(pageable),HttpStatus.OK);
     }
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DefaultResponse> getUserById(@PathVariable long id) throws NotFoundException {
         return DefaultResponse.noMessage(userService.findById(id),HttpStatus.OK);
     }
-    @GetMapping("/users/{email}")
-    public ResponseEntity<DefaultResponse> getUserByEmail(@PathVariable String email) throws NotFoundException {
+    @GetMapping("/params")
+    public ResponseEntity<DefaultResponse> getUserByEmail(@RequestParam String email) throws NotFoundException {
         return DefaultResponse.noMessage(userService.findByEmail(email),HttpStatus.OK);
     }
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<DefaultResponse> delete(@PathVariable long id) throws NotFoundException {
         userService.delete(id);
         return DefaultResponse.noObject("User deleted!",HttpStatus.OK);
+    }
+    @PatchMapping("/{id}/partecipation")
+    public ResponseEntity<DefaultResponse> partecipation(@PathVariable long id, @RequestBody @Validated PartecipationRequest partecipationRequest, BindingResult bindingResult) throws com.example.GestioneEventi.exceptions.BadRequestException, FullEventException, NotFoundException, AlreadyAssignedException {
+        if(bindingResult.hasErrors())
+            throw new com.example.GestioneEventi.exceptions.BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
+        eventService.addPartecipation(id,partecipationRequest.getEventId());
+        return DefaultResponse.noObject("Success",HttpStatus.OK);
     }
 }

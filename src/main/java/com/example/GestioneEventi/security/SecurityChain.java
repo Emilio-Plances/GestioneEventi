@@ -24,10 +24,13 @@ public class SecurityChain {
 
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/auth/**").permitAll());
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/users/{id}/upgrade").hasAuthority("ADMIN"));
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/users/params").permitAll());
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/users/{id}/partecipation").permitAll());
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/users").hasAuthority("ADMIN"));
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/users/{id}/upgrade").hasAuthority("ADMIN"));
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/api/events").hasAnyAuthority("ADMIN","ORGANIZER"));
+
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/**").denyAll());
 
         return httpSecurity.build();

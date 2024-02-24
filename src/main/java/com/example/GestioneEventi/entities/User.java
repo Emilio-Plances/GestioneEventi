@@ -23,12 +23,14 @@ public class User implements UserDetails {
     private String surname;
     @Column(unique = true)
     private String email;
+    @JsonIgnore
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
     @JsonIgnore
     @ManyToMany(mappedBy = "usersList",cascade = CascadeType.REMOVE)
     private List<Event> eventList;
+    @JsonIgnore
     @OneToMany(mappedBy = "creator",cascade = CascadeType.REMOVE)
     private List<Event> createdEvents;
     @Override

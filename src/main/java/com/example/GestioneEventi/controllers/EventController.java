@@ -1,9 +1,12 @@
 package com.example.GestioneEventi.controllers;
 
+import com.example.GestioneEventi.exceptions.AlreadyAssignedException;
+import com.example.GestioneEventi.exceptions.FullEventException;
 import com.example.GestioneEventi.exceptions.NotFoundException;
 import com.example.GestioneEventi.exceptions.UnauthorizedException;
 import com.example.GestioneEventi.requests.eventRequests.EventPatchRequest;
 import com.example.GestioneEventi.requests.eventRequests.EventRequest;
+import com.example.GestioneEventi.requests.userRequests.PartecipationRequest;
 import com.example.GestioneEventi.responses.DefaultResponse;
 import com.example.GestioneEventi.security.JwtTools;
 import com.example.GestioneEventi.services.EventService;
@@ -28,7 +31,6 @@ public class EventController {
     private EventService eventService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ORGANIZER')")
     public ResponseEntity<DefaultResponse> save(@RequestBody @Validated EventRequest eventRequest, BindingResult bindingResult,
                                                 @RequestHeader(HttpHeaders.AUTHORIZATION)String auth) throws BadRequestException, NotFoundException {
         if(bindingResult.hasErrors())
@@ -38,15 +40,15 @@ public class EventController {
         String email=jwtTools.extractEmailFromToken(token);
         return DefaultResponse.noMessage(eventService.save(email,eventRequest),HttpStatus.CREATED);
     }
+    @GetMapping
+    public ResponseEntity<DefaultResponse> getAll(Pageable pageable){
+        return DefaultResponse.noMessage(eventService.findAll(pageable), HttpStatus.OK);
+    }
     @PatchMapping("/{id}")
     public ResponseEntity<DefaultResponse> update(@PathVariable long id,@RequestBody @Validated EventPatchRequest eventPatchRequest,BindingResult bindingResult) throws BadRequestException, NotFoundException {
         if(bindingResult.hasErrors())
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
         return DefaultResponse.noMessage(eventService.update(id,eventPatchRequest),HttpStatus.OK);
-    }
-    @GetMapping
-    public ResponseEntity<DefaultResponse> getAll(Pageable pageable){
-        return DefaultResponse.noMessage(eventService.findAll(pageable), HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<DefaultResponse> getById(@PathVariable long id) throws NotFoundException {

@@ -13,4 +13,6 @@ public class EventPatchRequest {
     private Integer maxMembers;
     @Pattern(regexp = "((?:19|20)\\\\d\\\\d)-(0?[1-9]|1[012])-([12][0-9]|3[01]|0?[1-9])", message = "Enter a valid date! (YYYY-MM-DD)")
     private LocalDate date;
+    @Pattern(regexp = ".*[^ ].*",message = "Enter a valid description!")
+    private String description;
 }

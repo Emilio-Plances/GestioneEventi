@@ -2,6 +2,8 @@ package com.example.GestioneEventi.services;
 
 import com.example.GestioneEventi.entities.Event;
 import com.example.GestioneEventi.entities.User;
+import com.example.GestioneEventi.exceptions.AlreadyAssignedException;
+import com.example.GestioneEventi.exceptions.FullEventException;
 import com.example.GestioneEventi.exceptions.NotFoundException;
 import com.example.GestioneEventi.repositories.EventRepository;
 import com.example.GestioneEventi.requests.eventRequests.EventPatchRequest;
@@ -35,6 +37,7 @@ public class EventService {
         event.setLocation(event.getLocation());
         event.setDate(eventRequest.getDate());
         event.setMaxMembers(eventRequest.getMaxMembers());
+        event.setDescription((eventRequest.getDescription()));
         return eventRepository.save(event);
     }
     public Event update(long id, EventPatchRequest patchRequest) throws NotFoundException {
@@ -43,10 +46,18 @@ public class EventService {
         if(patchRequest.getLocation()!=null) event.setLocation(patchRequest.getLocation());
         if(patchRequest.getDate()!=null) event.setDate(patchRequest.getDate());
         if(patchRequest.getMaxMembers()!=null) event.setMaxMembers(patchRequest.getMaxMembers());
+        if(patchRequest.getDescription()!=null)event.setDescription((patchRequest.getDescription()));
         return eventRepository.save(event);
     }
     public void delete(long id) throws NotFoundException {
         Event event=findById(id);
         eventRepository.delete(event);
+    }
+    public void addPartecipation(long eventId, long id) throws NotFoundException, FullEventException, AlreadyAssignedException {
+        User user=userService.findById(id);
+        Event event=findById(eventId);
+        if(event.getUsersList().contains(user)) throw new AlreadyAssignedException("You are already assigned to this event");
+        if(event.getUsersList().size()==event.getMaxMembers()) throw new FullEventException("The event is full");
+        event.addUsersList(user);
     }
 }

@@ -23,9 +23,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    @Lazy
-    private EventService eventService;
-    @Autowired
     private PasswordEncoder encoder;
     public Page<User> findAll(Pageable pageable){
         return userRepository.findAll(pageable);
@@ -60,19 +57,13 @@ public class UserService {
         User user=findById(id);
         user.setPassword(encoder.encode(password));
     }
-    public void upgrade(long id) throws NotFoundException {
+    public User upgrade(long id) throws NotFoundException {
         User user=findById(id);
         user.setRole(Role.ORGANIZER);
+        return userRepository.save(user);
     }
     public void delete(long id) throws NotFoundException {
         User user=findById(id);
         userRepository.delete(user);
-    }
-    public void addPartecipation(long id, long eventId) throws NotFoundException, FullEventException, AlreadyAssignedException {
-        User user=findById(id);
-        Event event=eventService.findById(eventId);
-        if(event.getUsersList().contains(user)) throw new AlreadyAssignedException("You are already assigned to this event");
-        if(event.getUsersList().size()==event.getMaxMembers()) throw new FullEventException("The event is full");
-        event.addUsersList(user);
     }
 }

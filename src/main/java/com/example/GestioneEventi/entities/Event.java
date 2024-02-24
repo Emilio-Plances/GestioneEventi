@@ -22,6 +22,7 @@ public class Event {
     @Column(name = "max_members")
     private Integer maxMembers;
     private LocalDate date;
+    private String description;
     @ManyToOne
     @JoinColumn(name="creator_fk")
     private User creator;

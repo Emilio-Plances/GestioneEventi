@@ -56,7 +56,6 @@ public class UserController {
         return DefaultResponse.full("User upgraded",userService.upgrade(id),HttpStatus.OK);
     }
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<DefaultResponse> getAll(Pageable pageable){
         return DefaultResponse.noMessage(userService.findAll(pageable),HttpStatus.OK);
     }
@@ -73,11 +72,9 @@ public class UserController {
         userService.delete(id);
         return DefaultResponse.noObject("User deleted!",HttpStatus.OK);
     }
-    @PatchMapping("/{id}/partecipation")
-    public ResponseEntity<DefaultResponse> partecipation(@PathVariable long id, @RequestBody @Validated PartecipationRequest partecipationRequest, BindingResult bindingResult) throws com.example.GestioneEventi.exceptions.BadRequestException, FullEventException, NotFoundException, AlreadyAssignedException {
-        if(bindingResult.hasErrors())
-            throw new com.example.GestioneEventi.exceptions.BadRequestException(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
-        eventService.addPartecipation(id,partecipationRequest.getEventId());
+    @PatchMapping("/{id}/{eventId}")
+    public ResponseEntity<DefaultResponse> partecipation(@PathVariable long id, @PathVariable long eventId) throws com.example.GestioneEventi.exceptions.BadRequestException, FullEventException, NotFoundException, AlreadyAssignedException {
+        eventService.addPartecipation(id,eventId);
         return DefaultResponse.noObject("Success",HttpStatus.OK);
     }
 }

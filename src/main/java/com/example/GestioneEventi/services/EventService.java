@@ -34,7 +34,7 @@ public class EventService {
         User user=userService.findByEmail(email);
         event.setCreator(user);
         event.setName(eventRequest.getName());
-        event.setLocation(event.getLocation());
+        event.setLocation(eventRequest.getLocation());
         event.setDate(eventRequest.getDate());
         event.setMaxMembers(eventRequest.getMaxMembers());
         event.setDescription((eventRequest.getDescription()));
@@ -53,8 +53,8 @@ public class EventService {
         Event event=findById(id);
         eventRepository.delete(event);
     }
-    public void addPartecipation(long eventId, long id) throws NotFoundException, FullEventException, AlreadyAssignedException {
-        User user=userService.findById(id);
+    public void addPartecipation(long userId, long eventId) throws NotFoundException, FullEventException, AlreadyAssignedException {
+        User user=userService.findById(userId);
         Event event=findById(eventId);
         if(event.getUsersList().contains(user)) throw new AlreadyAssignedException("You are already assigned to this event");
         if(event.getUsersList().size()==event.getMaxMembers()) throw new FullEventException("The event is full");

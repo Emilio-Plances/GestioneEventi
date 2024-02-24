@@ -29,7 +29,6 @@ public class EventController {
     private JwtTools jwtTools;
     @Autowired
     private EventService eventService;
-
     @PostMapping
     public ResponseEntity<DefaultResponse> save(@RequestBody @Validated EventRequest eventRequest, BindingResult bindingResult,
                                                 @RequestHeader(HttpHeaders.AUTHORIZATION)String auth) throws BadRequestException, NotFoundException {
@@ -40,7 +39,7 @@ public class EventController {
         String email=jwtTools.extractEmailFromToken(token);
         return DefaultResponse.noMessage(eventService.save(email,eventRequest),HttpStatus.CREATED);
     }
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<DefaultResponse> getAll(Pageable pageable){
         return DefaultResponse.noMessage(eventService.findAll(pageable), HttpStatus.OK);
     }

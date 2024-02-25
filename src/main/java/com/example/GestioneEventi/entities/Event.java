@@ -36,4 +36,7 @@ public class Event {
     public void addUsersList(User user){
         usersList.add(user);
     }
+    public void removeUserList(User user){
+        usersList.remove(user);
+    }
 }

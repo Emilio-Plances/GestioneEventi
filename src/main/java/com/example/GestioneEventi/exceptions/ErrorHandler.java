@@ -40,4 +40,9 @@ public class ErrorHandler {
     public ErrorResponse alreadyAssignedException(AlreadyAssignedException e){
         return new ErrorResponse(e.getMessage());
     }
+    @ExceptionHandler(NotAssignedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse notAssignedException(NotAssignedException e){
+        return new ErrorResponse(e.getMessage());
+    }
 }

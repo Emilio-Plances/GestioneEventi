@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -66,5 +67,10 @@ public class UserService {
     public void delete(long id) throws NotFoundException {
         User user=findById(id);
         userRepository.delete(user);
+    }
+
+    public List<Event> findPartecipations(long id) throws NotFoundException {
+        User user=findById(id);
+        return user.getEventList();
     }
 }

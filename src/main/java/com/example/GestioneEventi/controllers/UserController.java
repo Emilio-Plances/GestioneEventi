@@ -1,11 +1,7 @@
 package com.example.GestioneEventi.controllers;
 
 import com.example.GestioneEventi.entities.User;
-import com.example.GestioneEventi.exceptions.AlreadyAssignedException;
-import com.example.GestioneEventi.exceptions.FullEventException;
-import com.example.GestioneEventi.exceptions.NotFoundException;
-import com.example.GestioneEventi.exceptions.BadRequestException;
-import com.example.GestioneEventi.exceptions.UnauthorizedException;
+import com.example.GestioneEventi.exceptions.*;
 import com.example.GestioneEventi.requests.userRequests.ChangePasswordRequest;
 import com.example.GestioneEventi.requests.userRequests.UserPatchRequest;
 import com.example.GestioneEventi.responses.DefaultResponse;
@@ -74,5 +70,14 @@ public class UserController {
     public ResponseEntity<DefaultResponse> partecipation(@PathVariable long id, @PathVariable long eventId) throws com.example.GestioneEventi.exceptions.BadRequestException, FullEventException, NotFoundException, AlreadyAssignedException {
         eventService.addPartecipation(id,eventId);
         return DefaultResponse.noObject("Success",HttpStatus.OK);
+    }
+    @PatchMapping("{id}/{eventId}/cancel")
+    public ResponseEntity<DefaultResponse> cancelPartecipation(@PathVariable long id,@PathVariable long eventId) throws NotFoundException, NotAssignedException {
+        eventService.removePartecipation(id,eventId);
+        return DefaultResponse.noObject("Success",HttpStatus.OK);
+    }
+    @GetMapping("/{id}/partecipations")
+    public ResponseEntity<DefaultResponse> getPartecipations(@PathVariable long id) throws NotFoundException {
+        return DefaultResponse.noMessage(userService.findPartecipations(id),HttpStatus.OK);
     }
 }

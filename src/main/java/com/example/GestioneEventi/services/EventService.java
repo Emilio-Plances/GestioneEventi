@@ -4,6 +4,7 @@ import com.example.GestioneEventi.entities.Event;
 import com.example.GestioneEventi.entities.User;
 import com.example.GestioneEventi.exceptions.AlreadyAssignedException;
 import com.example.GestioneEventi.exceptions.FullEventException;
+import com.example.GestioneEventi.exceptions.NotAssignedException;
 import com.example.GestioneEventi.exceptions.NotFoundException;
 import com.example.GestioneEventi.repositories.EventRepository;
 import com.example.GestioneEventi.requests.eventRequests.EventPatchRequest;
@@ -59,6 +60,13 @@ public class EventService {
         if(event.getUsersList().contains(user)) throw new AlreadyAssignedException("You are already assigned to this event");
         if(event.getUsersList().size()==event.getMaxMembers()) throw new FullEventException("The event is full");
         event.addUsersList(user);
+        eventRepository.save(event);
+    }
+    public void removePartecipation(long userId,long eventId) throws NotFoundException, NotAssignedException {
+        User user=userService.findById(userId);
+        Event event=findById(eventId);
+        if(!event.getUsersList().contains(user)) throw new NotAssignedException("You aren't subscribed to this event");
+        event.removeUserList(user);
         eventRepository.save(event);
     }
     public Page<Event> findNotFull(Pageable pageable){
